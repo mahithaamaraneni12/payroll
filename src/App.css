@@ -36,3 +36,36 @@
     transform: rotate(360deg);
   }
 }
+.container {
+  max-width: 800px;
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+  color: #007bff;
+}
+
+.table th, .table td {
+  text-align: center;
+}
+
+.btn-lg {
+  width: 100%;
+}
+
+.table-responsive {
+  margin-top: 20px;
+}
+.btn-violet {
+  background-color: #8000ff; /* Custom Violet */
+  border-color: #8000ff;
+  color: white;
+}
+
+.btn-violet:hover {
+  background-color: #6a00cc; /* Darker on hover */
+  border-color: #6a00cc;
+}
