@@ -11,10 +11,8 @@ const App = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-   
     e.target.value = "";
 
-    
     setData([]);
     setTotalSalary(0);
 
@@ -26,7 +24,7 @@ const App = () => {
     Papa.parse(file, {
       complete: (result) => {
         if (!result.data.length) {
-          setData([]); 
+          setData([]);
           setTotalSalary(0);
           Swal.fire("Error!", "CSV file is empty or invalid.", "error");
           return;
@@ -70,19 +68,26 @@ const App = () => {
     <div className="container mt-5">
       <h2 className="text-center mb-4">Payroll Processing</h2>
 
-      <div className="d-flex justify-content-center mb-4">
-        <div style={{ maxWidth: "300px", width: "100%" }}>
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleFileUpload}
-            className="form-control"
-          />
+     
+      <div className="row justify-content-center">
+        <div className="col-lg-6 col-md-8 col-sm-12">
+          <div className="card shadow-sm p-4">
+            <h5 className="card-title text-center">Upload Employee Salary CSV</h5>
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleFileUpload}
+              className="form-control mb-2"
+            />
+          
+          </div>
         </div>
       </div>
 
+     
       {data.length > 0 && <PayrollTable data={data} totalSalary={totalSalary} />}
 
+    
       <div className="text-center mt-4">
         <button
           className="btn btn-dark btn-lg text-white"
