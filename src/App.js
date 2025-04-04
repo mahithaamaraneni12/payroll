@@ -12,6 +12,12 @@ const App = () => {
     if (!file) return;
 
    
+    e.target.value = "";
+
+    
+    setData([]);
+    setTotalSalary(0);
+
     if (file.type !== "text/csv") {
       Swal.fire("Invalid File!", "Please upload a CSV file only.", "error");
       return;
@@ -19,28 +25,30 @@ const App = () => {
 
     Papa.parse(file, {
       complete: (result) => {
+        if (!result.data.length) {
+          setData([]); 
+          setTotalSalary(0);
+          Swal.fire("Error!", "CSV file is empty or invalid.", "error");
+          return;
+        }
+
         const parsedData = result.data.slice(1).map((row) => ({
-          id: row[0],
-          name: row[1],
+          id: row[0] || "N/A",
+          name: row[1]?.trim() || "Unknown",
           netSalary: parseFloat(row[2]) || 0,
-          lopDays: row[3],
-          pf: row[4],
-          esi: row[5],
-          tds: row[6],
+          lopDays: row[3] || "0",
+          pf: row[4] || "0",
+          esi: row[5] || "0",
+          tds: row[6]?.toLowerCase() === "yes" ? "Yes" : "No",
         }));
 
         setData(parsedData);
-        calculateTotal(parsedData);
+        setTotalSalary(parsedData.reduce((sum, row) => sum + row.netSalary, 0));
 
         Swal.fire("Success!", "Your CSV file was uploaded successfully.", "success");
       },
       skipEmptyLines: true,
     });
-  };
-
-  const calculateTotal = (parsedData) => {
-    const total = parsedData.reduce((sum, row) => sum + row.netSalary, 0);
-    setTotalSalary(total);
   };
 
   const handleProceed = () => {
@@ -62,7 +70,6 @@ const App = () => {
     <div className="container mt-5">
       <h2 className="text-center mb-4">Payroll Processing</h2>
 
-      
       <div className="d-flex justify-content-center mb-4">
         <div style={{ maxWidth: "300px", width: "100%" }}>
           <input
@@ -76,12 +83,12 @@ const App = () => {
 
       {data.length > 0 && <PayrollTable data={data} totalSalary={totalSalary} />}
 
-      
       <div className="text-center mt-4">
         <button
           className="btn btn-dark btn-lg text-white"
           style={{ backgroundColor: "#6f42c1" }}
           onClick={handleProceed}
+          disabled={data.length === 0}
         >
           Proceed to Disbursal
         </button>

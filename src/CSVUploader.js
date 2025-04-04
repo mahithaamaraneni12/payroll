@@ -6,24 +6,33 @@ const CSVUploader = ({ onDataParsed }) => {
   const handleFileUpload = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
+  
+    
+    e.target.value = "";
+  
     if (file.type !== "text/csv") {
-      Swal.fire("Invalid File!", "Please upload a CSV file only.", "error");
+      onDataParsed([]); 
+      setTimeout(() => {
+        Swal.fire("Invalid File!", "Please upload a CSV file only.", "error");
+      }, 0);
       return;
     }
-
+  
     Papa.parse(file, {
       complete: (result) => {
         if (!result.data.length) {
-          Swal.fire("Error!", "CSV file is empty or invalid.", "error");
+          onDataParsed([]); 
+          setTimeout(() => {
+            Swal.fire("Error!", "CSV file is empty or invalid.", "error");
+          }, 0);
           return;
         }
-
+  
         const rawHeaders = result.data[0];
         const normalizedHeaders = rawHeaders.map((header) =>
           header.trim().toLowerCase().replace(/\s+/g, "")
         );
-
+  
         const parsedData = result.data.slice(1).map((row) => ({
           id: row[normalizedHeaders.indexOf("employeeid")] || "N/A",
           name: row[normalizedHeaders.indexOf("name")]?.trim() || "Unknown",
@@ -33,15 +42,15 @@ const CSVUploader = ({ onDataParsed }) => {
           esi: row[normalizedHeaders.indexOf("esi")] || "0",
           tds: row[normalizedHeaders.indexOf("tds")]?.toLowerCase() === "yes" ? "Yes" : "No",
         }));
-
+  
         onDataParsed(parsedData);
-
         Swal.fire("Success!", "CSV uploaded and processed successfully.", "success");
       },
       header: false, 
       skipEmptyLines: true, 
     });
   };
+  
 
   return (
     <div className="container mt-3">
